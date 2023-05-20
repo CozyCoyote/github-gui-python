@@ -1,8 +1,11 @@
 import wx
 import wx.svg
+import wx.lib.scrolledpanel
 import consts
 import settings
 import resources
+import filters
+import logging
 
 from api import Api
 
@@ -31,9 +34,11 @@ class GithubUiFrame(wx.Frame):
         self.prContainer = wx.BoxSizer(wx.VERTICAL)
         container.Add(self.prContainer, consts.LEFT_TOP_PADDING)
 
+        self.prContainer = wx.lib.scrolledpanel.ScrolledPanel(pnl,size=(800,200), pos=(0,0), style=wx.SIMPLE_BORDER)
+        self.prContainer.SetupScrolling()
+        container.Add(self.prContainer)
 
-
-        pnl.SetSizer(container)
+        pnl.SetSizerAndFit(container)
 
         self.makeMenuBar()
 
@@ -99,7 +104,7 @@ class GithubUiFrame(wx.Frame):
             self.api.connect()
             favoritesRow = wx.BoxSizer(wx.HORIZONTAL)
             for project in self.api.listRepos():
-                print(project)
+                logging.debug(project)
                 favButton = wx.Button(pnl)
                 favButton.LabelText = project.name
                 favoritesRow.Add(favButton)
@@ -114,12 +119,14 @@ class GithubUiFrame(wx.Frame):
 
     def PickFavorite(self, event):
         sender = event.GetEventObject()
-        print(sender.LabelText)
+        logging.debug(sender.LabelText)
         # self.prContainer.Clear()
+        content = wx.BoxSizer(wx.VERTICAL) 
         for pr in self.api.listPullRequests("PyGithub/PyGithub"):
-            print(pr.title)
+            logging.debug(pr.title)
             prSizer = wx.BoxSizer(wx.HORIZONTAL)
-            prSizer.Add(wx.StaticBitmap(self.mainPannel, bitmap=resources.loadSvg('ic-bug')))
-            name = wx.StaticText(self.mainPannel, label=pr.title)
+            prSizer.Add(wx.StaticBitmap(self.prContainer, bitmap=filters.resolveBranchIcon(pr.title)))
+            name = wx.StaticText(self.prContainer, label=pr.title)
             prSizer.Add(name)
-            self.prContainer.Add(prSizer)
+            content.Add(prSizer)
+        self.prContainer.SetSizerAndFit(content)
