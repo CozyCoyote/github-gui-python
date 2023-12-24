@@ -2,8 +2,8 @@ import wx
 import wx.svg
 import wx.lib.scrolledpanel
 import consts
+import res.theme as theme
 import settings
-import resources
 import filters
 import logging
 
@@ -77,7 +77,7 @@ class GithubUiFrame(wx.Frame):
         container.Add(configLabel, consts.LEFT_TOP_PADDING)
 
         btn = wx.Button(pnl, label="close[x]")
-        btn.ForegroundColour = (255, 0, 0)
+        btn.ForegroundColour = theme.ERROR_COLOR
         btn.Bind(wx.EVT_BUTTON, self.CloseSettings)
         container.Add(btn, consts.LEFT_TOP_PADDING)
 

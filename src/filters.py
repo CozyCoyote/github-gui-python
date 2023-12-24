@@ -1,4 +1,4 @@
-import resources
+import res.resources as resources
 import types
 
 consts = types.SimpleNamespace()

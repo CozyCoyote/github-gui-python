@@ -4,7 +4,7 @@ import settings
 
 class Api:
 
-    g = None
+    g = Github
 
     def connect(self):
         self.g = Github(settings.token())
@@ -26,4 +26,4 @@ class Api:
         return self.g.get_user().get_repos()
 
     def listPullRequests(self,full_name):
-        return self.g.get_repo(full_name).get_pulls(state='open')
+        return self.g.get_repo(full_name_or_id=full_name, lazy=False).get_pulls(state='open')
